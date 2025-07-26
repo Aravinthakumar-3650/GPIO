@@ -1,1 +1,18 @@
+void setup() 
+{
+  volatile char *dirj,*outj;
+  volatile long i;
+  dirj=0x104;
+  *dirj=0x01;
+  outj=0x105;
+  while(1)
+  {
+    *outj=0x01;
+    for(i=0;i<450000;i++);
+    *outj=0x00;
+    for(i=0;i<450000;i++);
+  }
+}
+
+void loop() {}
 
