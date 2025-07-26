@@ -1,0 +1,22 @@
+void setup() 
+{
+  volatile char *dirf,*outf,increment;
+  volatile long i,j;
+  dirf=0x30;
+  *dirf=0xff;
+  outf=0x31;
+  
+  while(1)
+  {
+    increment=0;
+    for(i=1;i<8;i+=2)
+    {
+      increment = increment+(1<<i);
+      *outf=increment;
+      for(j=0;j<450000;j++);
+    }
+    *outf=0x00;
+    for(j=0;j<450000;j++);
+  }
+}
+void loop() {}
