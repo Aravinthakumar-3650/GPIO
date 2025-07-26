@@ -1,0 +1,18 @@
+void setup() 
+{
+  volatile char *dirc,*outc;
+  volatile long i,j;
+  dirc=0x27;
+  *dirc=0xff;
+  outc=0x28;
+  
+  while(1)
+  {
+    for(i=0;i<8;i++)
+    {
+      *outc=(1<<i);
+      for(j=0;j<450000;j++);
+    }
+  }
+}
+void loop() {}
