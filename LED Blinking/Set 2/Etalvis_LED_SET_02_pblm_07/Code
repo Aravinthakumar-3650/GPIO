@@ -1,0 +1,20 @@
+void setup() 
+{
+  volatile char *dirl,*outl;
+  volatile long i,j;
+  dirl=0x10A;
+  *dirl=0xff;
+  outl=0x10B;
+  
+  while(1)
+  {
+    
+    for(i=0;i<4;i++)
+    {
+      *outl=(1<<i);
+      for(j=0;j<450000;j++);
+    }
+    
+  }
+}
+void loop() {}
