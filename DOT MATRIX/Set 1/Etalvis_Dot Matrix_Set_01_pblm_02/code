@@ -14,7 +14,7 @@ void setup()
 while(1)
 {
   *outa=0x01;
-  *outb=0x7f;
+  *outb=0xfe;
 }
 }
 
