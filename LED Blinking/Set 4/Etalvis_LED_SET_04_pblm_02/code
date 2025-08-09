@@ -1,3 +1,6 @@
+void setup() 
+{
+
 volatile long i;
 volatile char *dira,*dirb,*outa,*outb;
 dira=0x21; dirb=0x24;
