@@ -13,15 +13,15 @@
     }
   ],
   "connections": [
-    [ "mega:22", "sevseg1:A", "green", [ "v1.1", "h141.8" ] ],
-    [ "mega:23", "sevseg1:B", "green", [ "v1.1", "h141.4" ] ],
-    [ "mega:24", "sevseg1:C", "green", [ "v0.95", "h74.6", "v86.4", "h67.2" ] ],
-    [ "mega:25", "sevseg1:D", "green", [ "v0.95", "h64.6", "v86.4", "h57.6" ] ],
-    [ "mega:26", "sevseg1:E", "green", [ "v1.05", "h74.6", "v76.8", "h38.4" ] ],
-    [ "mega:27", "sevseg1:F", "green", [ "v1.05", "h64.6", "v-19.2", "h48" ] ],
-    [ "mega:28", "sevseg1:G", "green", [ "v1.15", "h74.6", "v-28.8", "h48" ] ],
-    [ "mega:29", "sevseg1:DP", "green", [ "v1.15", "h64.6", "v67.2", "h76.8" ] ],
-    [ "mega:GND.3", "sevseg1:COM.1", "black", [ "v16.5", "h319.05" ] ]
+    [ "mega:22", "sevseg1:A", "green", [ "v-27.7", "h141.8" ] ],
+    [ "mega:23", "sevseg1:B", "green", [ "v-37.3", "h141.4" ] ],
+    [ "mega:24", "sevseg1:C", "green", [ "v0.95", "h55.4", "v124.8", "h86.4" ] ],
+    [ "mega:26", "sevseg1:E", "green", [ "v1.05", "h65", "v105.6", "h48" ] ],
+    [ "mega:27", "sevseg1:F", "green", [ "v1.05", "h26.2", "v-38.4", "h86.4" ] ],
+    [ "mega:28", "sevseg1:G", "green", [ "v1.15", "h45.8", "v-38.4", "h67.2" ] ],
+    [ "mega:29", "sevseg1:DP", "green", [ "v1.15", "h35.8", "v115.2", "h105.6" ] ],
+    [ "mega:GND.3", "sevseg1:COM.1", "black", [ "v16.5", "h319.05" ] ],
+    [ "mega:25", "sevseg1:D", "green", [ "v0.95", "h64.6", "v105.6", "h48" ] ]
   ],
   "dependencies": {}
 }
