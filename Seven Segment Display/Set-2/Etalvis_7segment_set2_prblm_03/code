@@ -1,0 +1,20 @@
+void setup() 
+{
+  volatile char *dira,*outa;
+  volatile long i,j;
+  dira=0x21;
+  *dira=0xff;
+  outa=0x22;
+
+  while(1)
+  {
+    volatile char order[10]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+    for(i=9;i>=0;i--)
+    {
+      *outa=(order[i]);
+      for(j=0;j<450000;j++);
+      
+    }
+  }
+}
+void loop() {}
