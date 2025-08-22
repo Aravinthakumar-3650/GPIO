@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "author": "Aravintha Kumar",
+  "author": "",
   "editor": "wokwi",
   "parts": [
     { "type": "wokwi-arduino-mega", "id": "mega", "top": 0.6, "left": -32.4, "attrs": {} },
@@ -9,7 +9,7 @@
       "id": "sevseg1",
       "top": -4.62,
       "left": 446.68,
-      "attrs": { "common": "cathode" }
+      "attrs": { "common": "anode" }
     }
   ],
   "connections": [
@@ -21,7 +21,7 @@
     [ "mega:27", "sevseg1:F", "green", [ "v1.05", "h35.8", "v-57.6", "h67.2" ] ],
     [ "mega:28", "sevseg1:G", "green", [ "v1.15", "h45.8", "v-67.2", "h76.8" ] ],
     [ "mega:29", "sevseg1:DP", "green", [ "v1.15", "h26.2", "v38.4", "h124.8" ] ],
-    [ "mega:GND.5", "sevseg1:COM.1", "black", [ "v0.95", "h131.8" ] ]
+    [ "mega:5V.2", "sevseg1:COM.2", "red", [ "v-56.6", "h122.2" ] ]
   ],
   "dependencies": {}
 }
