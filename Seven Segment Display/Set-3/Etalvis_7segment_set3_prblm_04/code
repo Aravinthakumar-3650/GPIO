@@ -1,0 +1,28 @@
+void setup() 
+{
+  volatile char *dira,*dirb,*outa,*outb;
+  volatile long i,j;
+  dira=0x21; *dira=0xff;
+  dirb=0x24; *dirb=0x03;
+  outa=0x22;
+  outb=0x25;
+
+  while(1)
+  {
+    *outb=0x02;
+    *outa=0x5b;
+    for(i=0;i<1000;i++);
+    *outb=0x03;
+    *outa=0x00;
+    for(i=0;i<1000;i++);
+
+    *outb=0x01;
+    *outa=0x6d;
+    for(i=0;i<1000;i++);
+    *outb=0x03;
+    *outa=0x00;
+    for(i=0;i<1000;i++);
+  }
+
+}
+void loop() {}
