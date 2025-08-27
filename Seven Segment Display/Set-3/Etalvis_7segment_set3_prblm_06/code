@@ -1,0 +1,39 @@
+void setup() 
+{
+  volatile char *dira,*dirb,*outa,*outb;
+  volatile long i,j,k,l;
+  dira=0x21; *dira=0xff;
+  dirb=0x24; *dirb=0x03;
+  outa=0x22;
+  outb=0x25;
+
+  while(1)
+  {
+    volatile char num[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+    for(j=0;j<10;j++)
+    {
+      for(k=0;k<10;k++)
+      {
+        for(l=0;l<100;l++)
+        {
+    *outb=0x02;
+    *outa=num[j];
+    for(i=0;i<1000;i++);
+    *outb=0x03;
+    *outa=0x00;
+    for(i=0;i<1000;i++);
+    
+    *outb=0x01;
+    *outa=num[k];
+    for(i=0;i<1000;i++);
+    *outb=0x03;
+    *outa=0x00;
+    for(i=0;i<1000;i++);
+        }
+      }
+    }
+    
+  }
+
+}
+void loop() {}
