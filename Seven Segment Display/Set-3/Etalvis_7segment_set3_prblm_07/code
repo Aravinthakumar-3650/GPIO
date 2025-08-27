@@ -1,0 +1,41 @@
+void setup() 
+{
+  volatile char *dira,*dirb,*dirf,*dirk;
+  volatile char *outa,*outb,*outf,*outk;
+  volatile long i,j,k,l,m;
+
+  dira=0x21;*dira=0xff;
+  dirb=0x24;*dirb=0xff;
+  dirf=0x30;*dirf=0xff;
+  dirk=0x107;*dirk=0xff;
+
+  outa=0x22;
+  outb=0x25;
+  outf=0x31;
+  outk=0x108;
+
+  while(1)
+  {
+    volatile char dec_order[10]={0xbf,0x86,0xdb,0xcf,0xe6,0xed,0xfd,0x87,0xff,0xef};
+    volatile char order[10]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+
+    for(i=0;i<10;i++)
+    {
+      *outa=order[i];
+      for(j=0;j<10;j++)
+      {
+        *outb=order[j];
+        for(k=0;k<10;k++)
+        {
+          *outf=order[k];
+          for(l=0;l<10;l++)
+          {
+            *outk=order[l];
+            for(m=0;m<45000;m++);
+          }
+        }
+      }
+    }
+  }
+}
+void loop() {}
