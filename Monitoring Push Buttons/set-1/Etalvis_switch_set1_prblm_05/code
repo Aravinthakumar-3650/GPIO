@@ -16,7 +16,7 @@ void setup() {
     x=*inb;
     if(((x & 0x01)==0x01))
      {
-       *outa=0x55;
+       *outa=0xaa;
        for(j=0;j<450000;j++);
      } 
     else
