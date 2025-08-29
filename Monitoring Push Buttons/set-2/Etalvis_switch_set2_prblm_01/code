@@ -14,15 +14,15 @@ void setup()
   while(1)
   {
     x=*inb;
-    if(((x & 0x01)==0x01))
+    if(((x & 0x04)==0x04))
     {
-      *outa=0x08;
+      *outa=0x02;
       delay_();
-      *outa= 0x02;
+      *outa= 0x04;
       delay_();
-      *outa=0x80;
+      *outa=0x20;
       delay_();
-      *outa=0x10;
+      *outa=0x40;
       delay_();
       *outa=0x00;
     }
