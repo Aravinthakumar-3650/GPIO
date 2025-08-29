@@ -1,0 +1,37 @@
+void setup() 
+{
+  volatile char *dira,*dirb,x;
+  volatile char *outa,*inb;
+
+  dira=0x21;
+  *dira=0xff;
+  dirb=0x24;
+  *dirb=0x00;
+
+  outa=0x22;
+  inb=0x23;
+
+  while(1)
+  {
+    x=*inb;
+    if(((x & 0x04)==0x04))
+    {
+      *outa=0x08;
+      delay_();
+      *outa= 0x20;
+      delay_();
+      *outa=0x80;
+      delay_();
+      *outa=0x40;
+      delay_();
+      *outa=0x00;
+    }
+  }
+}
+
+void loop() {}
+void delay_(void)
+{
+  volatile long i;
+  for(i=0;i<450000;i++);
+}
