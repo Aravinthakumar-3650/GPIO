@@ -1,0 +1,28 @@
+void setup() 
+{
+  volatile char *dira,*dirb;
+  volatile char *outa,*outb,i;
+  dira=0x21;
+  *dira=0xff;
+  dirb=0x24;
+  *dirb=0xff;
+
+  outa=0x22;
+  outb=0x25;
+
+  while(1)
+  {
+    unsigned char a[]={0xbf,0xdf,0xe9,0xe6,0xe6,0xd9,0xbf,0xff};
+    for(i=0;i<8;i++)
+    {
+      *outa=0x00;
+      *outb=0xff;
+      *outa=(1<<i);
+      *outb=(a[i]);
+      *outa=0x00;
+      *outb=0xff;
+    }
+  }
+}
+
+void loop() {}
