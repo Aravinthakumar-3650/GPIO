@@ -1,0 +1,72 @@
+#define CLK 0
+#define CS 1
+#define DIN 2
+
+volatile char *dira,*outa;
+void maxregister(unsigned address,unsigned d1,unsigned d2,unsigned d3,unsigned d4);
+void maxstart();
+
+void setup()
+{
+  dira = (char*)0x21;    
+  outa = (char*)0x22;   
+  
+  maxstart();
+  for(int i=1;i<=8;i++)
+  {
+    maxregister(i,0x00,0x00,0x00,0x80);
+  }
+}
+
+
+void maxstart()
+{
+  *dira |= (1<<CLK) | (1<<CS) | (1<<DIN);
+
+  maxregister(0x09, 0x00,0x00,0x00,0x00);  
+  maxregister(0x0A, 0x08,0x08,0x08,0x08);  
+  maxregister(0x0B, 0x07,0x07,0x07,0x07); 
+  maxregister(0x0C, 0x01,0x01,0x01,0x01);  
+  maxregister(0x0F, 0x00,0x00,0x00,0x00);  
+
+  for(int i=1;i<=8;i++)
+  {
+    maxregister(i, 0x00,0x00,0x00,0x00);
+  }
+}
+
+void maxregister(unsigned address,unsigned d1,unsigned d2,unsigned d3,unsigned d4)
+{
+  unsigned char data[4]={d1,d2,d3,d4};
+  *outa &= ~(1<<CS);
+
+  for(int matrix=0;matrix<4;matrix++)
+  {
+    for(int j=7;j>=0;j--)
+    {
+      *outa &= ~(1<<CLK);
+
+      if(address & (1<<j))
+        *outa |= (1<<DIN);
+      else
+        *outa &= ~(1<<DIN);
+
+      *outa |= (1<<CLK);
+    }
+
+      for(int j=7;j>=0;j--)
+      {
+        *outa &= ~(1<<CLK);
+
+        if(data[matrix] & (1<<j))
+          *outa |= (1<<DIN);
+        else
+          *outa &= ~(1<<DIN);
+
+        *outa |= (1<<CLK);
+      }
+    }
+  *outa|=(1<<CS);
+}
+
+void loop(){}
