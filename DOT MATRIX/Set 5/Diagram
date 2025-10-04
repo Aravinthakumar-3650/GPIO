@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "author": "Aravintha Kumar",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-mega", "id": "mega", "top": -57, "left": -3.6, "attrs": {} },
+    {
+      "type": "wokwi-max7219-matrix",
+      "id": "matrix1",
+      "top": -162.6,
+      "left": 17.04,
+      "attrs": { "chain": "4" }
+    }
+  ],
+  "connections": [
+    [ "matrix1:GND", "mega:GND.5", "black", [ "h38.4", "v248.65" ] ],
+    [ "mega:5V.2", "matrix1:V+", "red", [ "v1.6", "h35.8", "v-96.6" ] ],
+    [ "mega:22", "matrix1:CLK", "green", [ "v0" ] ],
+    [ "mega:23", "matrix1:CS", "green", [ "v0" ] ],
+    [ "mega:24", "matrix1:DIN", "green", [ "v1.55", "h23", "v-153.6" ] ]
+  ],
+  "dependencies": {}
+}
