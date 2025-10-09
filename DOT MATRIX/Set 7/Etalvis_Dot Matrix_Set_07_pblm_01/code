@@ -1,0 +1,125 @@
+#define CLK 0
+#define CS  1
+#define DIN 2
+
+volatile char *dira, *outa;
+void maxregister(unsigned address,unsigned d1,unsigned d2,unsigned d3,unsigned d4);
+void maxstart();
+void displayFrame(unsigned char frame[32][8]);
+void shiftDisplayRight(unsigned char frame[32][8], unsigned char newCol[8]);
+
+unsigned char matrix_W[8] = {0x41,0x41,0x41,0x41,0x49,0x55,0x63,0x41};
+unsigned char matrix_e[8] = {0x00,0x3c,0x42,0x42,0x3e,0x02,0x42,0x3c};
+unsigned char matrix_l[8] = {0x08,0x14,0x14,0x14,0x14,0x08,0x14,0x63};
+unsigned char matrix_c[8] = {0x00,0x3c,0x42,0x02,0x02,0x02,0x42,0x3c};
+unsigned char matrix_o[8] = {0x00,0x3C,0x42,0x42,0x42,0x42,0x42,0x3C};
+unsigned char matrix_m[8] = {0x00,0x6a,0x96,0x92,0x92,0x92,0x92,0x92};
+unsigned char matrix_e2[8]= {0x00,0x3c,0x42,0x42,0x3e,0x02,0x42,0x3c};
+
+unsigned char frame[32][8];
+
+void setup()
+{
+  dira = (char*)0x21;
+  outa = (char*)0x22;
+  maxstart();
+}
+
+void loop()
+{
+  unsigned char *letters[7] = {matrix_W, matrix_e, matrix_l, matrix_c, matrix_o, matrix_m, matrix_e2};
+  unsigned char scrollData[64][8]; 
+
+  for (int d=0; d<7; d++) {
+    for (int r=0; r<8; r++) {
+      for (int b=0; b<8; b++) {
+        if (letters[d][r] & (1 << b))
+          scrollData[d*8 + b][r] = 1;
+        else
+          scrollData[d*8 + b][r] = 0;
+      }
+    }
+  }
+
+  for (int g=56; g<64; g++)
+    for (int r=0; r<8; r++)
+      scrollData[g][r] = 0;
+
+  for (int pos=63; pos>=0; pos--) {
+    unsigned char newCol[8] = {0};
+    for (int r=0; r<8; r++)
+      newCol[r] = scrollData[pos][r];
+
+    shiftDisplayRight(frame, newCol);
+    displayFrame(frame);
+    delay(150);
+
+    if (pos == 0)
+      pos = 64;
+  }
+}
+
+void shiftDisplayRight(unsigned char frame[32][8], unsigned char newCol[8])
+{
+  for (int c=31; c>0; c--)
+    for (int r=0; r<8; r++)
+      frame[c][r] = frame[c-1][r];
+
+  for (int r=0; r<8; r++)
+    frame[0][r] = newCol[r];
+}
+
+void displayFrame(unsigned char frame[32][8])
+{
+  unsigned char cols[4][8];
+  for (int i=0; i<4; i++) {
+    for (int r=0; r<8; r++) {
+      unsigned char val=0;
+      for (int b=0; b<8; b++) {
+        if (frame[i*8 + b][r])
+          val |= (1 << b); 
+      }
+      cols[i][r] = val;
+    }
+  }
+  for (int r=1; r<=8; r++)
+    maxregister(r, cols[0][r-1], cols[1][r-1], cols[2][r-1], cols[3][r-1]);
+}
+
+void maxstart()
+{
+  *dira |= (1<<CLK) | (1<<CS) | (1<<DIN);
+
+  maxregister(0x09,0x00,0x00,0x00,0x00);
+  maxregister(0x0A,0x08,0x08,0x08,0x08);
+  maxregister(0x0B,0x07,0x07,0x07,0x07);
+  maxregister(0x0C,0x01,0x01,0x01,0x01);
+  maxregister(0x0F,0x00,0x00,0x00,0x00);
+
+  for (int i=1; i<=8; i++)
+    maxregister(i,0x00,0x00,0x00,0x00);
+}
+
+void maxregister(unsigned address,unsigned d1,unsigned d2,unsigned d3,unsigned d4)
+{
+  unsigned char data[4] = {d1,d2,d3,d4};
+  *outa &= ~(1<<CS);
+
+  for (int matrix=0; matrix<4; matrix++)
+  {
+    for (int j=7; j>=0; j--) {
+      *outa &= ~(1<<CLK);
+      if (address & (1<<j)) *outa |= (1<<DIN);
+      else *outa &= ~(1<<DIN);
+      *outa |= (1<<CLK);
+    }
+
+    for (int j=7; j>=0; j--) {
+      *outa &= ~(1<<CLK);
+      if (data[matrix] & (1<<j)) *outa |= (1<<DIN);
+      else *outa &= ~(1<<DIN);
+      *outa |= (1<<CLK);
+    }
+  }
+  *outa |= (1<<CS);
+}
