@@ -2,8 +2,9 @@ void setup()
 {
   volatile char *dira,*dirb,*dirc,*dirl;
   volatile char *outa,*outb,*outc,*outl;
-  volatile long d[8];  
-  volatile long i=0, sum=0,num1,num2;
+  volatile long num1=0,num2=0,sum=0;
+  volatile char pressed_key,i=0;
+  volatile char digits1=0, digits2=0;
 
   dira=0x21; *dira=0xff;
   dirb=0x24; *dirb=0xff;
@@ -15,43 +16,81 @@ void setup()
   outc=0x28;
   outl=0x10b;
 
-  char num[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+  char num[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};  
 
   while(1)
   {
-    for(i=0;i<8;i++)
+    pressed_key = scan();  
+
+    if(pressed_key <= 9)
     {
-      d[i]=scan();       
-      volatile char *ink=0x106;
-      while(*ink!=0);   
+      if(i == 0 && digits1 < 4)
+      {
+        num1 = num1 * 10 + pressed_key; 
+        digits1++;
+        displayNumber(num1, outa, outb, outl, outc, num); 
+      }
+      else if(i == 1 && digits2 < 4)
+      {
+        num2 = num2 * 10 + pressed_key;
+        digits2++;
+        displayNumber(num2, outa, outb, outl, outc, num); 
+      }
+      while(*(volatile char*)0x106 != 0);
     }
 
-    num1 = d[0]*1000 + d[1]*100 + d[2]*10 + d[3];
-    num2 = d[4]*1000 + d[5]*100 + d[6]*10 + d[7];
+    else if(pressed_key == 10) 
+    {
+      i = 1; 
+      num2 = 0;
+      digits2 = 0;
 
-    sum=num1 * num2;
+      *outa = *outb = *outc = *outl = 0x00;
+      while(*(volatile char*)0x106 != 0);
+    }
 
-    if(sum < 10)
+    else if(pressed_key == 11) 
     {
-      *outa=num[sum];   
+      sum = num1 * num2;  
+      displayNumber(sum, outa, outb, outl, outc, num);
+
+      num1=0; num2=0; sum=0;
+      digits1=0; digits2=0;
+      i=0;
+      while(*(volatile char*)0x106 != 0);
     }
-    else if(sum<1000)
-    {
-      *outa=num[sum/100];
-      *outb=num[(sum%100)/10];
-      *outl=num[sum%10];
-    }
-    else if(sum<10000)
-    {
-      *outa=num[sum/1000];
-      *outb=num[(sum%1000)/100];
-      *outl=num[(sum%100)/10];
-      *outc=num[sum%10];
-    }
-    else
-    {
-      *outa=0x79; *outb=0x79 ; *outl=0x79; *outc=0x79;
-    }
+  }
+}
+
+void displayNumber(int number, volatile char *outa, volatile char *outb, volatile char *outl, volatile char *outc, char num[])
+{
+  *outa = *outb = *outl = *outc = 0x00; 
+
+  if(number < 10)
+  {
+    *outa = num[number];
+  }
+  else if(number < 100)
+  {
+    *outa = num[number/10];
+    *outb = num[number%10];
+  }
+  else if(number < 1000)
+  {
+    *outa = num[number/100];
+    *outb = num[(number%100)/10];
+    *outl = num[number%10];
+  }
+  else if(number < 10000)
+  {
+    *outa = num[number/1000];
+    *outb = num[(number%1000)/100];
+    *outl = num[(number%100)/10];
+    *outc = num[number%10];
+  }
+  else
+  {
+    *outa=0x79; *outb=0x79; *outl=0x79; *outc=0x79; 
   }
 }
 
@@ -60,18 +99,20 @@ volatile char scan()
   volatile char row,status;
   volatile char *dirk,*ink,*dirf,*outf;
 
-  dirk=0x107; *dirk=0x00;   
-  dirf=0x30;  *dirf=0xff;  
+  dirk=0x107; *dirk=0x00;    
+  dirf=0x30;  *dirf=0xff;   
   ink=0x106;  outf=0x31;
 
   while(1)
   {
-    for(row=0;row<4;row++)
+    for(row=0; row<4; row++)
     {
-      *outf=(1<<row);
-      status=*ink;
-      if(status!=0)
+      *outf = (1<<row);
+      status = *ink;
+
+      if(status != 0)
       {
+        if((row==3)&&status==0x02) return 0;
         if((row==0)&&status==0x01) return 1;
         if((row==0)&&status==0x02) return 2;
         if((row==0)&&status==0x04) return 3;
@@ -81,7 +122,9 @@ volatile char scan()
         if((row==2)&&status==0x01) return 7;
         if((row==2)&&status==0x02) return 8;
         if((row==2)&&status==0x04) return 9;
-        if((row==3)&&status==0x02) return 0;
+
+        if((row==0)&&status==0x08) return 10; 
+        if((row==3)&&status==0x08) return 11;
       }
     }
   }
